@@ -25,3 +25,10 @@ test('Deve formatar um numero com casas decimais', function($mask, $number, $exp
     
 ]);
 
+test('Deve aceitar caracteres no meio dos numeros da mascara', function($mask, $number, $expected){
+    $value = PHPNumberFormat::format($mask, $number);
+    expect($value)->toBe($expected);
+})->with([
+    ['#$###,##',12345.678,'12$345,67'],
+    ['#A#B##C,##',12345.678,'12A3B45C,67'],
+]);

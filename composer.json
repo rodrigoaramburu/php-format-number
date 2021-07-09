@@ -3,7 +3,8 @@
     "description": "Biblioteca para utilizar máscaras em numeros",
     "type": "library",
     "require-dev": {
-        "pestphp/pest": "^1.9"
+        "pestphp/pest": "^1.9",
+        "nunomaduro/phpinsights": "^2.0"
     },
     "license": "MIT",
     "authors": [
@@ -17,5 +18,9 @@
         "psr-4": {
             "PHPNumberFormat\\": "src"
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "coverage": "./vendor/bin/pest --coverage"
     }
 }
