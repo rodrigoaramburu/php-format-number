@@ -21,13 +21,13 @@ final class PHPNumberFormat
         return $integer;
     }
 
-    public static function fillFraction(string $fractionMask, string $fractionValue): string
+    private static function fillFraction(string $fractionMask, string $fractionValue): string
     {
         $value = '';
 
         while (strlen($fractionMask) > 0) {
             $value .= strlen($fractionValue) <= 0 ? '0' : $fractionValue[0];
-            
+
             $fractionValue = substr($fractionValue, 1, strlen($fractionValue));
             $fractionMask = substr($fractionMask, 1, strlen($fractionMask));
         }
@@ -35,25 +35,19 @@ final class PHPNumberFormat
         return $value;
     }
 
-    public static function fillInteger(
+    private static function fillInteger(
         string $integerMask,
         string $integerValue
     ): string {
-        $value = '';
-        while (strlen($integerValue) > 0 || strlen($integerMask) > 0) {
-            if (strlen($integerValue) <= 0) {
-                $value = '0' . $value;
-            } else {
-                if (strlen($integerMask) > 0 && $integerMask[strlen($integerMask) - 1] !== '#') {
-                    $value = $integerMask[strlen($integerMask) - 1] . $value;
-                    $integerMask = substr($integerMask, 0, strlen($integerMask) - 1);
-                }
-                $value = $integerValue[strlen($integerValue) - 1] . $value;
-            }
+        $maskaredValue = str_split($integerMask);
+        $value = str_split($integerValue);
 
-            $integerValue = substr($integerValue, 0, strlen($integerValue) - 1);
-            $integerMask = substr($integerMask, 0, strlen($integerMask) - 1);
+        for ($i = count($maskaredValue) - 1; $i >= 0; $i--) {
+            $maskaredValue[$i] = $maskaredValue[$i] === '#' ? array_pop($value) : $maskaredValue[$i];
         }
-        return $value;
+        $maskaredValue = array_merge($value, $maskaredValue);
+        $maskaredValue = array_map(static fn ($v) => empty($v) ? '0' : $v, $maskaredValue);
+
+        return implode($maskaredValue);
     }
 }
