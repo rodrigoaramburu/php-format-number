@@ -1,0 +1,21 @@
+{
+    "name": "rodrigoaramburu/php-number-format",
+    "description": "Biblioteca para utilizar máscaras em numeros",
+    "type": "library",
+    "require-dev": {
+        "pestphp/pest": "^1.9"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "rodrigoaramburu",
+            "email": "rodrigoaramburu@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "PHPNumberFormat\\": "src"
+        }
+    }
+}
