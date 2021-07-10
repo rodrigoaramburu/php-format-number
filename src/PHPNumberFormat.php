@@ -11,49 +11,46 @@ final class PHPNumberFormat
         preg_match("/(?<integer>\d+)(\.(?<fraction>\d*))/", (string) $value, $matchValue);
         preg_match('/(?<integer>#[^,]*#?)(,(?<fraction>#+))?/', $mask, $matchMask);
 
-        $integer = PHPNumberFormat::fillInteger($matchMask['integer'], $matchValue['integer']);
+        $integer = self::processInteger($matchMask['integer'], $matchValue['integer']);
 
+        $fraction = '';
         if (isset($matchMask['fraction'])) {
-            $fraction = PHPNumberFormat::fillFraction($matchMask['fraction'], $matchValue['fraction']);
-            return $integer . ',' . $fraction;
+            $fraction = ',' . self::processFraction($matchMask['fraction'], $matchValue['fraction']);
         }
 
-        return $integer;
+        return $integer . $fraction;
     }
 
-    public static function fillFraction(string $fractionMask, string $fractionValue): string
-    {
-        $value = '';
-
-        while (strlen($fractionMask) > 0) {
-            $value .= strlen($fractionValue) <= 0 ? '0' : $fractionValue[0];
-            
-            $fractionValue = substr($fractionValue, 1, strlen($fractionValue));
-            $fractionMask = substr($fractionMask, 1, strlen($fractionMask));
+    private static function processFraction(
+        string $fractionMask,
+        string $fractionValue
+    ): string {
+        $maskaredValue = str_split($fractionMask);
+        $value = str_split($fractionValue);
+        $count = count($maskaredValue);
+        for ($i = 0; $i < $count; $i++) {
+            $maskaredValue[$i] = $maskaredValue[$i] === '#'
+                                 ? array_shift($value) ?? '0'
+                                 : $maskaredValue[$i];
         }
 
-        return $value;
+        return implode($maskaredValue);
     }
 
-    public static function fillInteger(
+    private static function processInteger(
         string $integerMask,
         string $integerValue
     ): string {
-        $value = '';
-        while (strlen($integerValue) > 0 || strlen($integerMask) > 0) {
-            if (strlen($integerValue) <= 0) {
-                $value = '0' . $value;
-            } else {
-                if (strlen($integerMask) > 0 && $integerMask[strlen($integerMask) - 1] !== '#') {
-                    $value = $integerMask[strlen($integerMask) - 1] . $value;
-                    $integerMask = substr($integerMask, 0, strlen($integerMask) - 1);
-                }
-                $value = $integerValue[strlen($integerValue) - 1] . $value;
-            }
+        $maskaredValue = str_split($integerMask);
+        $value = str_split($integerValue);
 
-            $integerValue = substr($integerValue, 0, strlen($integerValue) - 1);
-            $integerMask = substr($integerMask, 0, strlen($integerMask) - 1);
+        for ($i = count($maskaredValue) - 1; $i >= 0; $i--) {
+            $maskaredValue[$i] = $maskaredValue[$i] === '#'
+                                 ? array_pop($value) ?? '0'
+                                 : $maskaredValue[$i];
         }
-        return $value;
+        $maskaredValue = array_merge($value, $maskaredValue);
+
+        return implode($maskaredValue);
     }
 }

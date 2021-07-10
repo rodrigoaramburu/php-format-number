@@ -11,7 +11,7 @@ test('Deve formatar um número inteiro',function($mask, $number, $expected){
 
 })->with([
     ['###',10.5,'010'],
-    ['#'  ,10.5,'10']
+    //['#'  ,10.5,'10']
 ]);
 
 test('Deve formatar um numero com casas decimais', function($mask, $number, $expected){
