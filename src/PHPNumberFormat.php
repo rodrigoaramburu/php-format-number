@@ -11,31 +11,33 @@ final class PHPNumberFormat
         preg_match("/(?<integer>\d+)(\.(?<fraction>\d*))/", (string) $value, $matchValue);
         preg_match('/(?<integer>#[^,]*#?)(,(?<fraction>#+))?/', $mask, $matchMask);
 
-        $integer = PHPNumberFormat::fillInteger($matchMask['integer'], $matchValue['integer']);
+        $integer = self::processInteger($matchMask['integer'], $matchValue['integer']);
 
+        $fraction = '';
         if (isset($matchMask['fraction'])) {
-            $fraction = PHPNumberFormat::fillFraction($matchMask['fraction'], $matchValue['fraction']);
-            return $integer . ',' . $fraction;
+            $fraction = ',' . self::processFraction($matchMask['fraction'], $matchValue['fraction']);
         }
 
-        return $integer;
+        return $integer . $fraction;
     }
 
-    private static function fillFraction(string $fractionMask, string $fractionValue): string
-    {
-        $value = '';
-
-        while (strlen($fractionMask) > 0) {
-            $value .= strlen($fractionValue) <= 0 ? '0' : $fractionValue[0];
-
-            $fractionValue = substr($fractionValue, 1, strlen($fractionValue));
-            $fractionMask = substr($fractionMask, 1, strlen($fractionMask));
+    private static function processFraction(
+        string $fractionMask,
+        string $fractionValue
+    ): string {
+        $maskaredValue = str_split($fractionMask);
+        $value = str_split($fractionValue);
+        $count = count($maskaredValue);
+        for ($i = 0; $i < $count; $i++) {
+            $maskaredValue[$i] = $maskaredValue[$i] === '#'
+                                 ? array_shift($value) ?? '0'
+                                 : $maskaredValue[$i];
         }
 
-        return $value;
+        return implode($maskaredValue);
     }
 
-    private static function fillInteger(
+    private static function processInteger(
         string $integerMask,
         string $integerValue
     ): string {
@@ -43,10 +45,11 @@ final class PHPNumberFormat
         $value = str_split($integerValue);
 
         for ($i = count($maskaredValue) - 1; $i >= 0; $i--) {
-            $maskaredValue[$i] = $maskaredValue[$i] === '#' ? array_pop($value) : $maskaredValue[$i];
+            $maskaredValue[$i] = $maskaredValue[$i] === '#'
+                                 ? array_pop($value) ?? '0'
+                                 : $maskaredValue[$i];
         }
         $maskaredValue = array_merge($value, $maskaredValue);
-        $maskaredValue = array_map(static fn ($v) => empty($v) ? '0' : $v, $maskaredValue);
 
         return implode($maskaredValue);
     }
