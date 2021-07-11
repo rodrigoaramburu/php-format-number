@@ -51,3 +51,12 @@ test('Deve permitir sulfixo na mascara', function($mask, $number, $expected){
     ['#,## A', 123.587, '123,58 A'],
     ['# AC', 1234, '1234 AC'],
 ]);
+
+test('Deve permitir troca de separador de casas decimais', function($mask, $number, $expected){
+    PHPNumberFormat::setDecimalSeparator('.');
+    $value = PHPNumberFormat::format($mask, $number);
+    expect($value)->toBe($expected);
+})->with([
+    ['#.##', 123.587, '123.58'],
+    ['#,#,#,#.##', 1234.587, '1,2,3,4.58'],
+]);
