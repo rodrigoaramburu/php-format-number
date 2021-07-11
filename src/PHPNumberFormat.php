@@ -8,17 +8,17 @@ final class PHPNumberFormat
 {
     public static function format(string $mask, float $value): string
     {
-        preg_match("/(?<integer>\d+)(\.(?<fraction>\d*))/", (string) $value, $matchValue);
-        preg_match('/(?<integer>#[^,]*#?)(,(?<fraction>#+))?/', $mask, $matchMask);
+        preg_match("/(?<integer>\d+)(\.(?<fraction>\d*))?/", (string) $value, $matchValue);
+        preg_match("/(?<prefix>[^#]*)(?<integer>#[^,]*#?)(,(?<fraction>#+))?(?<suffix>[^#]*)/", $mask, $matchMask);
 
         $integer = self::processInteger($matchMask['integer'], $matchValue['integer']);
 
         $fraction = '';
-        if (isset($matchMask['fraction'])) {
+        if ($matchMask['fraction'] !== '') {
             $fraction = ',' . self::processFraction($matchMask['fraction'], $matchValue['fraction']);
         }
 
-        return $integer . $fraction;
+        return ($matchMask['prefix'] ?? '') . $integer . $fraction . ($matchMask['suffix'] ?? '');
     }
 
     private static function processFraction(
