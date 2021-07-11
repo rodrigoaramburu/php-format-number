@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PHPNumberFormat;
+namespace NumberFormat;
 
-final class PHPNumberFormat
+final class NumberFormat
 {
     private static string $decimalSeparator = ',';
 
@@ -15,7 +15,7 @@ final class PHPNumberFormat
     public static function format(string $mask, float $value): string
     {
         preg_match("/(?<integer>\d+)(\.(?<fraction>\d*))?/", (string) $value, $matchValue);
-        preg_match("/(?<prefix>[^#]*)(?<integer>#[^" .self::$decimalSeparator . "]*#?)(" . self::$decimalSeparator . "(?<fraction>#+))?(?<suffix>[^#]*)/", $mask, $matchMask);
+        preg_match('/(?<prefix>[^#]*)(?<integer>#[^' .self::$decimalSeparator . ']*#?)(' . self::$decimalSeparator . '(?<fraction>#+))?(?<suffix>[^#]*)/', $mask, $matchMask);
 
         $integer = self::processInteger($matchMask['integer'], $matchValue['integer']);
 

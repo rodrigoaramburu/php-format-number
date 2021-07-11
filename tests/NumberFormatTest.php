@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use PHPNumberFormat\PHPNumberFormat;
+use NumberFormat\NumberFormat;
 
 test('Deve formatar um número inteiro',function($mask, $number, $expected){
 
-    $value = PHPNumberFormat::format($mask, $number);
+    $value = NumberFormat::format($mask, $number);
     expect( $value )->toBe( $expected);
 
 })->with([
@@ -16,7 +16,7 @@ test('Deve formatar um número inteiro',function($mask, $number, $expected){
 
 test('Deve formatar um numero com casas decimais', function($mask, $number, $expected){
 
-    $value = PHPNumberFormat::format('#,##', 10.5);
+    $value = NumberFormat::format('#,##', 10.5);
     expect( $value )->toBe('10,50');
 
 })->with([
@@ -26,7 +26,7 @@ test('Deve formatar um numero com casas decimais', function($mask, $number, $exp
 ]);
 
 test('Deve aceitar caracteres no meio dos numeros da mascara', function($mask, $number, $expected){
-    $value = PHPNumberFormat::format($mask, $number);
+    $value = NumberFormat::format($mask, $number);
     expect($value)->toBe($expected);
 })->with([
     ['#$###,##',12345.678,'12$345,67'],
@@ -36,7 +36,7 @@ test('Deve aceitar caracteres no meio dos numeros da mascara', function($mask, $
 
 
 test('Deve permitir prefixo na mascara', function($mask, $number, $expected){
-    $value = PHPNumberFormat::format($mask, $number);
+    $value = NumberFormat::format($mask, $number);
     expect($value)->toBe($expected);
 })->with([
     ['R$ #,##', 123.587, 'R$ 123,58'],
@@ -45,7 +45,7 @@ test('Deve permitir prefixo na mascara', function($mask, $number, $expected){
 
 
 test('Deve permitir sulfixo na mascara', function($mask, $number, $expected){
-    $value = PHPNumberFormat::format($mask, $number);
+    $value = NumberFormat::format($mask, $number);
     expect($value)->toBe($expected);
 })->with([
     ['#,## A', 123.587, '123,58 A'],
@@ -53,8 +53,8 @@ test('Deve permitir sulfixo na mascara', function($mask, $number, $expected){
 ]);
 
 test('Deve permitir troca de separador de casas decimais', function($mask, $number, $expected){
-    PHPNumberFormat::setDecimalSeparator('.');
-    $value = PHPNumberFormat::format($mask, $number);
+    NumberFormat::setDecimalSeparator('.');
+    $value = NumberFormat::format($mask, $number);
     expect($value)->toBe($expected);
 })->with([
     ['#.##', 123.587, '123.58'],
