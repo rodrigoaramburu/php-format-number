@@ -20,8 +20,8 @@ final class NumberFormat
         $integer = self::processInteger($matchMask['integer'], $matchValue['integer']);
 
         $fraction = '';
-        if ($matchMask['fraction'] !== '') {
-            $fraction = self::$decimalSeparator . self::processFraction($matchMask['fraction'], $matchValue['fraction']);
+        if ( $matchMask['fraction'] !== '') {
+            $fraction = self::$decimalSeparator . self::processFraction($matchMask['fraction'], $matchValue['fraction'] ?? '0');
         }
 
         return ($matchMask['prefix'] ?? '') . $integer . $fraction . ($matchMask['suffix'] ?? '');
