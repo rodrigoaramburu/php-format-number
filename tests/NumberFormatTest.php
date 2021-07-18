@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use NumberFormat\NumberFormat;
 
+beforeEach( fn() => NumberFormat::setDecimalSeparator(',') );
+
 test('Deve formatar um número inteiro',function($mask, $number, $expected){
 
     $value = NumberFormat::format($mask, $number);
@@ -60,3 +62,11 @@ test('Deve permitir troca de separador de casas decimais', function($mask, $numb
     ['#.##', 123.587, '123.58'],
     ['#,#,#,#.##', 1234.587, '1,2,3,4.58'],
 ]);
+
+
+test('Deve formatar valor sem casas decimais mas mascara com', function(){
+    
+    $value = NumberFormat::format('#,###', 10);
+    expect($value)->toBe('10,000');
+
+});
