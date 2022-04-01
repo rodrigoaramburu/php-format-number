@@ -70,3 +70,9 @@ test('Deve formatar valor sem casas decimais mas mascara com', function(){
     expect($value)->toBe('10,000');
 
 });
+
+
+test('deve retornar vazio se mascara não for válida', function(){
+    $value = NumberFormat::format('$', 10.00);
+    expect($value)->toBe('');
+});
