@@ -17,10 +17,13 @@ final class NumberFormat
         preg_match("/(?<integer>\d+)(\.(?<fraction>\d*))?/", (string) $value, $matchValue);
         preg_match('/(?<prefix>[^#]*)(?<integer>#[^' .self::$decimalSeparator . ']*#?)(' . self::$decimalSeparator . '(?<fraction>#+))?(?<suffix>[^#]*)/', $mask, $matchMask);
 
+        if(!array_key_exists('integer', $matchMask)){
+            return '';
+        }
         $integer = self::processInteger($matchMask['integer'], $matchValue['integer']);
 
         $fraction = '';
-        if ( $matchMask['fraction'] !== '') {
+        if ( array_key_exists('fraction',$matchMask) && $matchMask['fraction'] !== '') {
             $fraction = self::$decimalSeparator . self::processFraction($matchMask['fraction'], $matchValue['fraction'] ?? '0');
         }
 
